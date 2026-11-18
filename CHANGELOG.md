@@ -2,6 +2,10 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.5.2] - 2026-11-18
+### Corregido
+- Las pestañas Técnico y Código quedaban ocultas a la derecha en el panel estrecho; la barra de pestañas ahora se reparte en varias filas.
+
 ## [0.5.1] - 2026-11-18
 ### Eliminado
 - Selector «Ver como» (User-Agent), `ua.js` y los permisos `declarativeNetRequest` y `optional_host_permissions`: daba más problemas que valor. La extensión vuelve a necesitar solo `activeTab` + `scripting`.
