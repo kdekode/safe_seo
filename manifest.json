@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Safe SEO",
+  "version": "0.1.0",
+  "description": "Auditoría SEO on-page al instante: sin servidores, sin tracking y con permisos mínimos.",
+  "minimum_chrome_version": "112",
+  "action": {
+    "default_title": "Safe SEO",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["activeTab", "scripting"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
+  }
+}

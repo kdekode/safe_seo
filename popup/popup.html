@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Safe SEO</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <strong>Safe SEO</strong>
+        <span id="host" class="muted"></span>
+      </div>
+      <button id="refresh" type="button" class="btn" title="Volver a analizar la página">↻ Reanalizar</button>
+    </header>
+    <nav id="tabs" role="tablist" aria-label="Secciones"></nav>
+    <main id="panel" role="tabpanel" tabindex="-1"></main>
+    <footer class="foot muted"><span id="version"></span> · Todo se analiza en local</footer>
+  </body>
+</html>

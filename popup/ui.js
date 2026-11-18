@@ -1,0 +1,151 @@
+/**
+ * Helpers de UI. Todo el contenido dinámico se inserta con nodos de texto
+ * (nunca innerHTML), así que el contenido de las páginas auditadas no puede
+ * inyectar HTML ni scripts en el popup.
+ */
+
+export function h(tag, attrs = {}, ...children) {
+  const el = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs ?? {})) {
+    if (value == null || value === false) continue;
+    if (key === 'class') el.className = value;
+    else if (key.startsWith('on')) el.addEventListener(key.slice(2), value);
+    else el.setAttribute(key, value === true ? '' : value);
+  }
+  el.append(...children.flat(Infinity).filter((c) => c != null && c !== false));
+  return el;
+}
+
+const LEVEL_LABEL = { ok: 'OK', warn: 'Aviso', error: 'Error', info: 'Info' };
+
+export const pill = (level, text = LEVEL_LABEL[level]) => h('span', { class: `pill pill-${level}` }, text);
+
+/** Fila de comprobación: icono de estado + título + detalle. */
+export const check = (level, title, detail) =>
+  h(
+    'li',
+    { class: `check check-${level}` },
+    pill(level),
+    h('div', { class: 'check-body' }, h('strong', {}, title), detail ? h('span', { class: 'muted' }, detail) : null),
+  );
+
+/** Lista de comprobaciones con el resumen de estados arriba. */
+export function checklist(items) {
+  const count = (level) => items.filter((i) => i.level === level).length;
+  return h(
+    'section',
+    { class: 'card' },
+    h(
+      'div',
+      { class: 'summary' },
+      ...['error', 'warn', 'ok'].map((level) => h('span', { class: `summary-${level}` }, `${count(level)} ${LEVEL_LABEL[level].toLowerCase()}${level === 'ok' ? '' : 's'}`)),
+    ),
+    h('ul', { class: 'checks' }, items.map((i) => check(i.level, i.title, i.detail))),
+  );
+}
+
+/** Tabla clave/valor. Omite filas sin valor. */
+export function kv(rows) {
+  return h(
+    'dl',
+    { class: 'kv' },
+    rows
+      .filter(([, value]) => value !== '' && value != null)
+      .flatMap(([key, value]) => [h('dt', {}, key), h('dd', {}, value)]),
+  );
+}
+
+export const card = (title, ...body) => h('section', { class: 'card' }, title ? h('h2', {}, title) : null, ...body);
+
+export const empty = (message) => h('p', { class: 'empty' }, message);
+
+export const code = (text) => h('code', {}, text);
+
+/** Medidor de longitud con zona recomendada [min, max]. */
+export function meter(value, min, max, ceiling = max * 1.5) {
+  const level = value === 0 ? 'error' : value < min || value > max ? 'warn' : 'ok';
+  const width = Math.min(100, (value / ceiling) * 100);
+  return h(
+    'div',
+    { class: `meter meter-${level}`, role: 'img', 'aria-label': `${value} de ${min}-${max} recomendados` },
+    h('div', { class: 'meter-zone', style: `left:${(min / ceiling) * 100}%;width:${((max - min) / ceiling) * 100}%` }),
+    h('div', { class: 'meter-bar', style: `width:${width}%` }),
+  );
+}
+
+/** Enlace externo seguro: solo http(s), con noopener. */
+export function link(href, text = href) {
+  if (!/^https?:\/\//i.test(href)) return h('span', { class: 'url' }, text);
+  return h('a', { class: 'url', href, target: '_blank', rel: 'noopener noreferrer' }, text);
+}
+
+export function button(label, onclick, title) {
+  return h('button', { type: 'button', class: 'btn', title, onclick }, label);
+}
+
+/** Botón que copia texto y confirma brevemente. */
+export function copyButton(label, getText) {
+  const btn = button(label, async () => {
+    await navigator.clipboard.writeText(getText());
+    btn.textContent = '¡Copiado!';
+    setTimeout(() => (btn.textContent = label), 1200);
+  });
+  return btn;
+}
+
+/** CSV seguro: escapa comillas y neutraliza fórmulas (=, +, -, @) de Excel/Sheets. */
+export function toCsv(rows) {
+  const cell = (value) => {
+    let text = String(value ?? '');
+    if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+    return `"${text.replaceAll('"', '""')}"`;
+  };
+  return rows.map((row) => row.map(cell).join(',')).join('\n');
+}
+
+export function csvButton(label, filename, getRows) {
+  return button(label, () => {
+    const blob = new Blob(['﻿', toCsv(getRows())], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    h('a', { href: url, download: filename }).click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+}
+
+export const toolbar = (...children) => h('div', { class: 'toolbar' }, ...children);
+
+/**
+ * Barra de filtros: chips exclusivos + buscador.
+ * `onChange({ filter, query })` se llama en cada cambio.
+ */
+export function filterBar(filters, onChange) {
+  const state = { filter: filters[0].id, query: '' };
+  const chips = filters.map((f) =>
+    h(
+      'button',
+      {
+        type: 'button',
+        class: 'chip',
+        'aria-pressed': String(f.id === state.filter),
+        onclick: () => {
+          state.filter = f.id;
+          chips.forEach((c, i) => c.setAttribute('aria-pressed', String(filters[i].id === f.id)));
+          onChange({ ...state });
+        },
+      },
+      f.label,
+      f.count != null ? h('span', { class: 'chip-count' }, String(f.count)) : null,
+    ),
+  );
+  const search = h('input', {
+    type: 'search',
+    class: 'search',
+    placeholder: 'Buscar…',
+    'aria-label': 'Buscar',
+    oninput: (e) => {
+      state.query = e.target.value.trim().toLowerCase();
+      onChange({ ...state });
+    },
+  });
+  return h('div', { class: 'filters' }, h('div', { class: 'chips' }, chips), search);
+}
