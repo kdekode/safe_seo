@@ -2,6 +2,13 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.4.0] - 2026-11-18
+### Cambiado
+- El popup pasa a ser un **panel lateral superpuesto** (25 % del ancho, alto completo) que se abre/cierra al pulsar el icono.
+- Fondo translúcido con desenfoque, control de transparencia (50–100 %) y tipografía/contraste mejorados.
+- `popup/` renombrado a `panel/`; nuevo service worker `src/background.js`.
+- `use_dynamic_url` en el recurso accesible para que las webs no detecten la extensión.
+
 ## [0.3.0] - 2026-11-18
 ### Añadido
 - Pestaña **Social**: Open Graph y Twitter Card con comprobaciones y vista previa (sin descargar la imagen, por privacidad).

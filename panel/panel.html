@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Safe SEO</title>
-    <link rel="stylesheet" href="popup.css" />
-    <script type="module" src="popup.js"></script>
+    <link rel="stylesheet" href="panel.css" />
+    <script type="module" src="panel.js"></script>
   </head>
   <body>
     <header class="top">
@@ -13,7 +13,11 @@
         <strong>Safe SEO</strong>
         <span id="host" class="muted"></span>
       </div>
-      <button id="refresh" type="button" class="btn" title="Volver a analizar la página">↻ Reanalizar</button>
+      <div class="actions">
+        <input id="alpha" class="alpha" type="range" min="50" max="100" step="5" value="88" title="Transparencia del panel" aria-label="Opacidad del panel" />
+        <button id="refresh" type="button" class="btn" title="Volver a analizar la página">↻</button>
+        <button id="close" type="button" class="btn" title="Cerrar panel" aria-label="Cerrar panel">✕</button>
+      </div>
     </header>
     <nav id="tabs" role="tablist" aria-label="Secciones"></nav>
     <main id="panel" role="tabpanel" tabindex="-1"></main>

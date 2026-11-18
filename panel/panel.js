@@ -1,6 +1,7 @@
 import { TABS } from './tabs/index.js';
 import { empty, h } from './ui.js';
 
+const PANEL_ID = 'safe-seo-panel-host';
 const $ = (id) => document.getElementById(id);
 const tablist = $('tabs');
 const panel = $('panel');
@@ -62,13 +63,43 @@ function buildTabs() {
   });
 }
 
+/** Transparencia del panel, recordada entre sesiones (si el almacenamiento está disponible). */
+function setupOpacity() {
+  const slider = $('alpha');
+  const apply = (percent) => document.documentElement.style.setProperty('--alpha', String(percent / 100));
+  try {
+    const saved = Number(localStorage.getItem('alpha'));
+    if (saved >= 50 && saved <= 100) slider.value = String(saved);
+  } catch {
+    /* sin almacenamiento: se usa el valor por defecto */
+  }
+  apply(Number(slider.value));
+  slider.addEventListener('input', () => {
+    apply(Number(slider.value));
+    try {
+      localStorage.setItem('alpha', slider.value);
+    } catch {
+      /* ignorar */
+    }
+  });
+}
+
+/** Elimina el iframe del panel de la página. Autocontenida (se inyecta). */
+function removePanel(id) {
+  document.getElementById(id)?.remove();
+}
+
 async function init() {
   $('version').textContent = `v${chrome.runtime.getManifest().version}`;
+  setupOpacity();
   buildTabs();
 
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tabId = Number(new URLSearchParams(location.search).get('tab'));
+  $('close').addEventListener('click', () => chrome.scripting.executeScript({ target: { tabId }, func: removePanel, args: [PANEL_ID] }));
+
+  const tab = await chrome.tabs.get(tabId).catch(() => null);
   if (!tab?.url || !/^https?:\/\//i.test(tab.url)) {
-    panel.replaceChildren(empty('Abre una página http(s) para analizarla. Las páginas internas del navegador y la Chrome Web Store no son accesibles.'));
+    panel.replaceChildren(empty('Abre una página http(s) para analizarla.'));
     $('refresh').disabled = true;
     return;
   }

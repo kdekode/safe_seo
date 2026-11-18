@@ -15,15 +15,15 @@ Extensión para Chromium (Manifest V3) con auditoría SEO on-page al instante.
 ## Estructura
 ```
 manifest.json
-popup/            UI (popup.js = shell, ui.js = helpers, tabs/ = una pestaña por archivo)
+panel/            UI (panel.js = shell, ui.js = helpers, tabs/ = una pestaña por archivo)
 src/collectors/   funciones autocontenidas que se inyectan en la página
 scripts/          utilidades (iconos, empaquetado)
 ```
 
 ## Añadir una pestaña
 1. Crea `src/collectors/<nombre>.js` con una función **autocontenida** (se serializa e inyecta).
-2. Crea `popup/tabs/<nombre>.js` exportando `{ id, label, collect, render }`.
-3. Regístrala en `popup/tabs/index.js`.
+2. Crea `panel/tabs/<nombre>.js` exportando `{ id, label, collect, render }`.
+3. Regístrala en `panel/tabs/index.js`.
 
 ## Versionado
 SemVer. Un commit por versión, con tag `vX.Y.Z` y entrada en `CHANGELOG.md`. La versión vive en `manifest.json`.

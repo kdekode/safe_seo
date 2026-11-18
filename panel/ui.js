@@ -1,7 +1,7 @@
 /**
  * Helpers de UI. Todo el contenido dinámico se inserta con nodos de texto
  * (nunca innerHTML), así que el contenido de las páginas auditadas no puede
- * inyectar HTML ni scripts en el popup.
+ * inyectar HTML ni scripts en el panel.
  */
 
 export function h(tag, attrs = {}, ...children) {
@@ -156,7 +156,7 @@ export const row = (title, sub, badges = []) =>
 
 /**
  * Listado filtrable con buscador. Solo pinta `cap` filas para mantener el
- * popup fluido; el CSV exporta siempre todo.
+ * panel fluido; el CSV exporta siempre todo.
  */
 export function filteredList({ items, filters, searchText, row: renderRow, cap = 150 }) {
   const list = h('div', { class: 'rows' });
