@@ -149,3 +149,27 @@ export function filterBar(filters, onChange) {
   });
   return h('div', { class: 'filters' }, h('div', { class: 'chips' }, chips), search);
 }
+
+/** Fila genérica de listado: título + subtítulo + badges. */
+export const row = (title, sub, badges = []) =>
+  h('div', { class: 'row' }, h('div', { class: 'row-main' }, h('div', { class: 'row-title' }, title), sub), h('div', { class: 'badges' }, badges));
+
+/**
+ * Listado filtrable con buscador. Solo pinta `cap` filas para mantener el
+ * popup fluido; el CSV exporta siempre todo.
+ */
+export function filteredList({ items, filters, searchText, row: renderRow, cap = 150 }) {
+  const list = h('div', { class: 'rows' });
+  const note = h('p', { class: 'muted note' });
+
+  const update = ({ filter, query }) => {
+    const { test } = filters.find((f) => f.id === filter);
+    const hits = items.filter((item) => test(item) && (!query || searchText(item).toLowerCase().includes(query)));
+    list.replaceChildren(...hits.slice(0, cap).map(renderRow));
+    note.textContent = !hits.length ? 'Sin resultados.' : hits.length > cap ? `Mostrando ${cap} de ${hits.length}. Exporta el CSV para verlos todos.` : `${hits.length} resultado(s)`;
+  };
+
+  const bar = filterBar(filters.map((f) => ({ id: f.id, label: f.label, count: items.filter(f.test).length })), update);
+  update({ filter: filters[0].id, query: '' });
+  return h('div', { class: 'stack' }, bar, note, list);
+}

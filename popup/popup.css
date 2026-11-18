@@ -110,3 +110,16 @@ a.url:hover { text-decoration: underline; }
 .chip[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .chip-count { margin-left: 4px; opacity: 0.75; }
 .search { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+
+/* Listados */
+.rows { display: grid; }
+.row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: 0; }
+.row-main { min-width: 0; overflow-wrap: anywhere; }
+.row-title { font-weight: 500; overflow-wrap: anywhere; }
+.badges { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; flex: none; max-width: 40%; }
+.badges .pill { min-width: 0; }
+.note { margin: 0; font-size: 12px; }
+.heading-row { justify-content: flex-start; align-items: baseline; }
+.tag { flex: none; padding: 0 5px; border-radius: 4px; background: var(--border); font-size: 11px; font-weight: 700; }
+.tag-h1 { background: var(--accent); color: var(--bg); }
