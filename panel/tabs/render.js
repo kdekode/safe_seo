@@ -16,7 +16,7 @@ const ROWS = [
   ['Palabras', (s) => s.words],
 ];
 
-function audit({ raw, rendered }, ua) {
+function audit({ raw, rendered }) {
   const items = [];
   const add = (level, title, detail) => items.push({ level, title, detail });
 
@@ -26,7 +26,7 @@ function audit({ raw, rendered }, ua) {
   }
   const a = raw.summary;
   const b = rendered.summary;
-  add(raw.status === 200 ? 'ok' : 'warn', `HTML inicial descargado: HTTP ${raw.status} · ${(raw.bytes / 1024).toFixed(0)} KB`, ua.value ? `User-Agent: ${ua.label}` : 'Con el User-Agent del navegador, sin cookies.');
+  add(raw.status === 200 ? 'ok' : 'warn', `HTML inicial descargado: HTTP ${raw.status} · ${(raw.bytes / 1024).toFixed(0)} KB`, 'Petición anónima, sin cookies.');
   if (raw.bytes > MAX_HTML_BYTES) add('warn', 'HTML superior a 2 MB', 'Google solo procesa los primeros 2 MB de cada archivo HTML.');
 
   const noindex = (s) => /noindex|none/i.test(s.robots);
@@ -95,14 +95,13 @@ function sourceViewer({ raw, rendered }) {
 export default {
   id: 'render',
   label: 'Código',
-  usesUa: true,
   collect: collectRender,
-  render(data, { ua }) {
+  render(data) {
     const url = encodeURIComponent(data.url);
     return h(
       'div',
       { class: 'stack' },
-      checklist(audit(data, ua)),
+      checklist(audit(data)),
       card('HTML inicial vs. renderizado', data.raw.error ? h('p', { class: 'muted' }, data.raw.error) : comparison(data), h('p', { class: 'muted note' }, pill('info', 'Nota'), ' Las filas resaltadas difieren. El navegador ya ejecutó el JS; un rastreador primero ve solo la columna izquierda.')),
       card('Código fuente', sourceViewer(data)),
       card(

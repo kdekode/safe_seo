@@ -135,10 +135,6 @@ a.url:hover { text-decoration: underline; }
 details summary { cursor: pointer; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .json { margin: 8px 0; max-height: 220px; overflow: auto; padding: 8px; border-radius: 6px; background: var(--bg); font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-/* Selector de User-Agent */
-.uabar { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 12px; border-bottom: 1px solid var(--border); }
-.uabar[hidden] { display: none; }
-.select { padding: 4px 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
 
 /* Comparativa y visor de código */
 .cmp { width: 100%; border-collapse: collapse; font-size: 13px; }

@@ -2,6 +2,10 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.5.1] - 2026-11-18
+### Eliminado
+- Selector «Ver como» (User-Agent), `ua.js` y los permisos `declarativeNetRequest` y `optional_host_permissions`: daba más problemas que valor. La extensión vuelve a necesitar solo `activeTab` + `scripting`.
+
 ## [0.5.0] - 2026-11-18
 ### Añadido
 - Selector **«Ver como»** (Googlebot smartphone/escritorio, Bingbot, GPTBot) para las pestañas Técnico y Código. Usa una regla temporal de `declarativeNetRequest` limitada a la pestaña y al dominio; el permiso del dominio se pide solo al elegir un bot y puede revocarse desde el panel.

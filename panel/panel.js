@@ -1,69 +1,29 @@
 import { TABS } from './tabs/index.js';
-import { button, empty, h } from './ui.js';
-import { USER_AGENTS, clearRule, hasAccess, requestAccess, revokeAccess, withUserAgent } from './ua.js';
+import { empty, h } from './ui.js';
 
 const PANEL_ID = 'safe-seo-panel-host';
 const $ = (id) => document.getElementById(id);
 const tablist = $('tabs');
 const panel = $('panel');
 
-const uabar = $('uabar');
-const state = { tab: null, cache: new Map(), selected: null, token: 0, ua: 'default' };
-const currentUa = () => USER_AGENTS.find((u) => u.id === state.ua);
+const state = { tab: null, cache: new Map(), selected: null, token: 0 };
 
 /** Ejecuta el colector de una pestaña en la página (una sola vez, con caché). */
 function collect(def) {
-  const ua = def.usesUa ? currentUa() : null;
-  const key = ua ? `${def.id}:${ua.id}` : def.id;
-  if (!state.cache.has(key)) {
-    const run = () => chrome.scripting.executeScript({ target: { tabId: state.tab.id }, func: def.collect });
-    const task = ua?.value
-      ? async () => {
-          if (!(await hasAccess(state.tab.url))) throw new Error('Falta el permiso para cambiar el User-Agent en este dominio. Vuelve a elegirlo en el selector.');
-          return withUserAgent(state.tab, ua.value, run);
-        }
-      : run;
-    const promise = task()
+  if (!state.cache.has(def.id)) {
+    const promise = chrome.scripting
+      .executeScript({ target: { tabId: state.tab.id }, func: def.collect })
       .then(([frame]) => {
         if (frame?.result === undefined) throw new Error('La página no devolvió datos.');
         return frame.result;
       })
       .catch((error) => {
-        state.cache.delete(key);
+        state.cache.delete(def.id);
         throw error;
       });
-    state.cache.set(key, promise);
+    state.cache.set(def.id, promise);
   }
-  return state.cache.get(key);
-}
-
-function buildUaBar() {
-  const select = h(
-    'select',
-    { class: 'select', 'aria-label': 'Ver la página como', onchange: onUaChange },
-    USER_AGENTS.map((u) => h('option', { value: u.id }, u.label)),
-  );
-  const revoke = button('Revocar permisos', async () => {
-    await revokeAccess();
-    select.value = state.ua = 'default';
-    selectTab(state.selected);
-  }, 'Elimina el acceso a dominios concedido para cambiar el User-Agent');
-  uabar.replaceChildren(h('label', {}, 'Ver como: ', select), revoke);
-}
-
-/** Cambiar a un bot necesita permiso del dominio (se pide con este gesto del usuario). */
-async function onUaChange(event) {
-  const select = event.target;
-  const next = USER_AGENTS.find((u) => u.id === select.value);
-  if (next.value && !(await hasAccess(state.tab.url))) {
-    const granted = await requestAccess(state.tab.url).catch(() => false);
-    if (!granted) {
-      select.value = state.ua;
-      return;
-    }
-  }
-  state.ua = next.id;
-  selectTab(state.selected);
+  return state.cache.get(def.id);
 }
 
 async function selectTab(id) {
@@ -77,12 +37,11 @@ async function selectTab(id) {
     btn.tabIndex = active ? 0 : -1;
   }
   panel.setAttribute('aria-labelledby', `tab-${def.id}`);
-  uabar.hidden = !def.usesUa;
   panel.replaceChildren(empty('Analizando…'));
 
   try {
     const data = await collect(def);
-    if (token === state.token) panel.replaceChildren(def.render(data, { ua: currentUa() }));
+    if (token === state.token) panel.replaceChildren(def.render(data));
   } catch (error) {
     if (token === state.token) panel.replaceChildren(h('p', { class: 'error-box' }, `No se pudo analizar: ${error.message}`));
   }
@@ -134,7 +93,6 @@ async function init() {
   $('version').textContent = `v${chrome.runtime.getManifest().version}`;
   setupOpacity();
   buildTabs();
-  buildUaBar();
 
   const tabId = Number(new URLSearchParams(location.search).get('tab'));
   $('close').addEventListener('click', () => chrome.scripting.executeScript({ target: { tabId }, func: removePanel, args: [PANEL_ID] }));
@@ -146,7 +104,6 @@ async function init() {
     return;
   }
   state.tab = tab;
-  addEventListener('pagehide', () => clearRule(tab.id));
   $('host').textContent = new URL(tab.url).hostname;
   $('refresh').addEventListener('click', () => {
     state.cache.clear();
