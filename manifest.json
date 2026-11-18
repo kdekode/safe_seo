@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Safe SEO",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Auditoría SEO on-page al instante: sin servidores, sin tracking y con permisos mínimos.",
   "minimum_chrome_version": "112",
   "action": {

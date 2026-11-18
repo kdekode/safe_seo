@@ -2,6 +2,12 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.3.0] - 2026-11-18
+### Añadido
+- Pestaña **Social**: Open Graph y Twitter Card con comprobaciones y vista previa (sin descargar la imagen, por privacidad).
+- Pestaña **Schema**: JSON-LD (incl. `@graph`), errores de sintaxis, Microdata y RDFa; copiar JSON.
+- Pestaña **Técnico**: estado HTTP y cabeceras (`X-Robots-Tag`, compresión, HSTS), veredicto de `robots.txt` para Googlebot y `*`, sitemaps y presencia de la URL, hreflang, contenido mixto, LCP/CLS/FCP/TTFB y tamaño del DOM.
+
 ## [0.2.0] - 2026-11-18
 ### Añadido
 - Pestaña **Encabezados**: esquema H1–H6 con detección de saltos, vacíos y ocultos; copiar esquema.

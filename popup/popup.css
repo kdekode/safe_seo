@@ -123,3 +123,9 @@ a.url:hover { text-decoration: underline; }
 .heading-row { justify-content: flex-start; align-items: baseline; }
 .tag { flex: none; padding: 0 5px; border-radius: 4px; background: var(--border); font-size: 11px; font-weight: 700; }
 .tag-h1 { background: var(--accent); color: var(--bg); }
+
+/* Social, Schema */
+.share { display: grid; gap: 4px; }
+.share-title { font-weight: 600; font-size: 14px; }
+details summary { cursor: pointer; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.json { margin: 8px 0; max-height: 220px; overflow: auto; padding: 8px; border-radius: 6px; background: var(--bg); font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
