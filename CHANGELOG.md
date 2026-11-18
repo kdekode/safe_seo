@@ -2,6 +2,13 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.5.0] - 2026-11-18
+### Añadido
+- Selector **«Ver como»** (Googlebot smartphone/escritorio, Bingbot, GPTBot) para las pestañas Técnico y Código. Usa una regla temporal de `declarativeNetRequest` limitada a la pestaña y al dominio; el permiso del dominio se pide solo al elegir un bot y puede revocarse desde el panel.
+- Pestaña **Código**: HTML inicial vs. DOM renderizado (title, description, canonical, robots, H1, enlaces, imágenes, JSON-LD, palabras), avisos de contenido que depende de JavaScript, visor de código/texto y enlaces a Rich Results Test, PageSpeed y Wayback.
+### Permisos
+- Nuevo `declarativeNetRequest` y `optional_host_permissions` (solo se conceden bajo demanda, por dominio).
+
 ## [0.4.0] - 2026-11-18
 ### Cambiado
 - El popup pasa a ser un **panel lateral superpuesto** (25 % del ancho, alto completo) que se abre/cierra al pulsar el icono.

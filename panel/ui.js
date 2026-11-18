@@ -112,6 +112,26 @@ export function csvButton(label, filename, getRows) {
   });
 }
 
+/** Selector exclusivo en forma de chips. */
+export function segmented(options, onChange) {
+  const buttons = options.map((option, index) =>
+    h(
+      'button',
+      {
+        type: 'button',
+        class: 'chip',
+        'aria-pressed': String(index === 0),
+        onclick: () => {
+          buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
+          onChange(option.id);
+        },
+      },
+      option.label,
+    ),
+  );
+  return h('div', { class: 'chips' }, buttons);
+}
+
 export const toolbar = (...children) => h('div', { class: 'toolbar' }, ...children);
 
 /**

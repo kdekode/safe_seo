@@ -9,14 +9,14 @@ const VITALS = [
   ['TTFB', 'ttfb', 800, 1800, (v) => `${v} ms`],
 ];
 
-function audit(d) {
+function audit(d, ua) {
   const items = [];
   const add = (level, title, detail) => items.push({ level, title, detail });
   const { page, robots } = d;
 
   if (page.error) add('warn', 'No se pudo consultar la página', page.error);
   else {
-    add(page.status === 200 ? 'ok' : page.status >= 400 ? 'error' : 'warn', `HTTP ${page.status} (vista de rastreador anónimo)`);
+    add(page.status === 200 ? 'ok' : page.status >= 400 ? 'error' : 'warn', `HTTP ${page.status} · ${ua.value ? `como ${ua.label}` : 'sin cookies'}`);
     if (page.redirected) add('warn', 'La URL redirige', page.finalUrl);
     const xrobots = page.headers['X-Robots-Tag'];
     if (/noindex|none/i.test(xrobots)) add('error', 'X-Robots-Tag con noindex', xrobots);
@@ -61,13 +61,14 @@ function audit(d) {
 
 export default {
   id: 'technical',
+  usesUa: true,
   label: 'Técnico',
   collect: collectTechnical,
-  render(d) {
+  render(d, { ua }) {
     return h(
       'div',
       { class: 'stack' },
-      checklist(audit(d)),
+      checklist(audit(d, ua)),
       card('Cabeceras HTTP', d.page.error ? h('p', { class: 'muted' }, d.page.error) : kv(Object.entries(d.page.headers))),
       card(
         'Sitemaps',
