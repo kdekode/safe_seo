@@ -1,16 +1,20 @@
 /**
- * Al pulsar el icono se abre (o cierra) el panel SEO sobre la página.
+ * Al pulsar el icono se abre (o cierra) el panel SEO sobre la página y se
+ * pinta de inmediato el punto de indexabilidad en el icono.
  * El panel es un iframe de la propia extensión; `use_dynamic_url` hace que su
  * URL cambie en cada sesión para que las webs no puedan detectar la extensión.
  */
-const PANEL_ID = 'safe-seo-panel-host';
+import { setIndexDot } from '../panel/badge.js';
+import { indexability } from '../panel/indexability.js';
+import { collectGeneral } from './collectors/general.js';
+import { DEFAULT_TITLE, PANEL_ID } from './shared.js';
 
-/** Se inyecta en la página: debe ser autocontenida. */
+/** Se inyecta en la página: debe ser autocontenida. Devuelve true si abre el panel. */
 function togglePanel(src, id) {
   const existing = document.getElementById(id);
   if (existing) {
     existing.remove();
-    return;
+    return false;
   }
   const frame = document.createElement('iframe');
   frame.id = id;
@@ -32,27 +36,51 @@ function togglePanel(src, id) {
   };
   for (const [prop, value] of Object.entries(styles)) frame.style.setProperty(prop, value, 'important');
   document.documentElement.append(frame);
+  return true;
 }
 
-const DEFAULT_TITLE = 'Safe SEO: abrir/cerrar panel';
+/** Se inyecta en la página: lee el veredicto guardado en el iframe del panel (si sigue ahí). */
+function readState(id) {
+  return document.getElementById(id)?.getAttribute('data-state') ?? null;
+}
 
-// Al navegar, el veredicto de indexación deja de valer: se restaura el icono.
-chrome.tabs.onUpdated.addListener((tabId, info) => {
-  if (info.status !== 'loading') return;
-  chrome.action.setIcon({ tabId, path: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png' } }).catch(() => {});
-  chrome.action.setTitle({ tabId, title: DEFAULT_TITLE }).catch(() => {});
-});
+/** Veredicto rápido (solo con el HTML de la página); el panel lo afina después con robots.txt y cabeceras. */
+async function quickVerdict(tabId) {
+  try {
+    const [{ result }] = await chrome.scripting.executeScript({ target: { tabId }, func: collectGeneral });
+    await setIndexDot(tabId, indexability(result).state);
+  } catch {
+    /* sin datos: el panel lo calculará */
+  }
+}
 
 chrome.action.onClicked.addListener(async (tab) => {
   try {
-    await chrome.scripting.executeScript({
+    const [{ result: opened }] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: togglePanel,
       args: [`${chrome.runtime.getURL('panel/panel.html')}?tab=${tab.id}`, PANEL_ID],
     });
+    if (opened) await quickVerdict(tab.id);
   } catch {
     // Páginas internas, Chrome Web Store, etc.: avisamos con una marca en el icono.
     await chrome.action.setBadgeText({ tabId: tab.id, text: '✕' });
     setTimeout(() => chrome.action.setBadgeText({ tabId: tab.id, text: '' }).catch(() => {}), 2000);
+  }
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId, info) => {
+  if (info.status === 'loading') {
+    // Cualquier carga restablece el icono; se repinta si el panel sigue en la página.
+    chrome.action.setIcon({ tabId, path: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png' } }).catch(() => {});
+    chrome.action.setTitle({ tabId, title: DEFAULT_TITLE }).catch(() => {});
+  } else if (info.status === 'complete') {
+    try {
+      // Tras navegar el acceso temporal se pierde (la llamada falla) o el panel ya no existe (null): se queda el icono normal.
+      const [{ result }] = await chrome.scripting.executeScript({ target: { tabId }, func: readState, args: [PANEL_ID] });
+      if (result) await setIndexDot(tabId, result);
+    } catch {
+      /* sin acceso a la pestaña */
+    }
   }
 });

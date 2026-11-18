@@ -2,6 +2,11 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.10.1] - 2026-11-18
+### Corregido
+- El punto de indexación tardaba en aparecer porque esperaba a la pestaña Técnico. Ahora el service worker lo pinta al pulsar el icono con un veredicto rápido, y el panel lo afina en dos fases (primero con la página, luego con robots.txt y cabeceras).
+- El punto ya no se pierde si la página dispara otra carga mientras el panel sigue abierto.
+
 ## [0.10.0] - 2026-11-18
 ### Añadido
 - **Punto de color en el icono** según la indexabilidad de la pestaña: verde = indexable, naranja = indexable con avisos (canonical a otra URL, nofollow, bloqueada por robots.txt, redirección), rosa = no indexable (noindex en meta o `X-Robots-Tag`, error HTTP). Se calcula al abrir el panel y se restablece al navegar. El tooltip del icono indica el estado.

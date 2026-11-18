@@ -2,8 +2,8 @@ import { TABS } from './tabs/index.js';
 import { empty, h, pill } from './ui.js';
 import { VERDICT_LABEL, indexability } from './indexability.js';
 import { setIndexDot } from './badge.js';
+import { PANEL_ID } from '../src/shared.js';
 
-const PANEL_ID = 'safe-seo-panel-host';
 const $ = (id) => document.getElementById(id);
 const tablist = $('tabs');
 const panel = $('panel');
@@ -74,19 +74,34 @@ function buildTabs() {
   });
 }
 
-/** Veredicto de indexación: cabecera del panel + punto de color en el icono. */
+/**
+ * Veredicto de indexación en dos fases: primero con los datos de la página
+ * (instantáneo) y luego afinado con robots.txt y cabeceras HTTP.
+ */
+let verdictRun = 0;
 async function refreshVerdict() {
   const box = $('verdict');
+  const run = ++verdictRun;
+  const byId = (id) => TABS.find((t) => t.id === id);
+  const show = (verdict, pending) => {
+    if (run !== verdictRun) return;
+    state.verdict = verdict;
+    const text = verdict.reasons.join(' · ');
+    box.replaceChildren(
+      pill(verdict.state === 'bad' ? 'error' : verdict.state, VERDICT_LABEL[verdict.state]),
+      h('span', { class: 'reason', title: text }, pending ? `${text} · comprobando robots.txt y cabeceras…` : text),
+    );
+    setIndexDot(state.tab.id, verdict.state).catch(() => {});
+  };
+
   box.replaceChildren(h('span', { class: 'reason' }, 'Calculando indexación…'));
   try {
-    const byId = (id) => TABS.find((t) => t.id === id);
-    const [general, technical] = await Promise.all([collect(byId('general')), collect(byId('technical')).catch(() => ({}))]);
-    state.verdict = indexability(general, technical);
-    const { state: level, reasons } = state.verdict;
-    box.replaceChildren(pill(level === 'bad' ? 'error' : level, VERDICT_LABEL[level]), h('span', { class: 'reason', title: reasons.join(' · ') }, reasons.join(' · ')));
-    await setIndexDot(state.tab.id, level);
+    const general = await collect(byId('general'));
+    show(indexability(general), true);
+    const technical = await collect(byId('technical')).catch(() => ({}));
+    show(indexability(general, technical), false);
   } catch {
-    box.replaceChildren(h('span', { class: 'reason' }, 'No se pudo determinar la indexación'));
+    if (run === verdictRun) box.replaceChildren(h('span', { class: 'reason' }, 'No se pudo determinar la indexación'));
   }
 }
 
@@ -185,10 +200,6 @@ async function init() {
     return;
   }
   state.tab = tab;
-  // Si la página termina de cargar algo (iframes, etc.) y el icono se restablece, se reaplica el punto.
-  chrome.tabs.onUpdated.addListener((id, info) => {
-    if (id === tab.id && info.status === 'complete' && state.verdict) setIndexDot(id, state.verdict.state).catch(() => {});
-  });
   addEventListener('pagehide', () => cleanups.splice(0).forEach((fn) => fn()));
   $('host').textContent = new URL(tab.url).hostname;
   $('refresh').addEventListener('click', () => {
