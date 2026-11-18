@@ -193,3 +193,23 @@ export function filteredList({ items, filters, searchText, row: renderRow, cap =
   update({ filter: filters[0].id, query: '' });
   return h('div', { class: 'stack' }, bar, note, list);
 }
+
+/** Visor JSON con colores (solo nodos de texto/span: seguro con contenido de terceros). */
+export function jsonView(value) {
+  const text = (JSON.stringify(value, null, 2) ?? 'null').slice(0, 30000);
+  const pre = h('pre', { class: 'json' });
+  const token = /("(?:\\.|[^"\\])*")(\s*:)?|\b(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b|\b(true|false|null)\b/g;
+  let last = 0;
+  for (const m of text.matchAll(token)) {
+    if (m.index > last) pre.append(text.slice(last, m.index));
+    const kind = m[1] ? (m[2] ? 'j-key' : 'j-str') : m[3] ? 'j-num' : 'j-lit';
+    pre.append(h('span', { class: kind }, m[1] ?? m[0]));
+    if (m[2]) pre.append(m[2]);
+    last = m.index + m[0].length;
+  }
+  pre.append(text.slice(last));
+  return pre;
+}
+
+/** Bloque desplegable. */
+export const details = (summary, open, ...body) => h('details', { open }, h('summary', {}, summary), ...body);

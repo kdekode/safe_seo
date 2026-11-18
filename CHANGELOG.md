@@ -2,6 +2,15 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.7.0] - 2026-11-18
+### Añadido
+- Pestaña **Tags**: IDs de GTM/GA4/Ads/UA (script, inline o activo), tabla de Consent Mode v2 (default vs. update), comandos `gtag` desplegables, scripts de terceros (GTM, gtag, Meta, TikTok, Hotjar, CMPs…) y snippets inline con copiar. Avisos: varios GTM, gtag+GTM a la vez, UA obsoleto, Consent Mode ausente o incompleto.
+- Eventos: hits de **Google Ads** (conversión, remarketing) capturados en red; filtros Todos / Clave (ads) / Solo red / Solo dataLayer; **agrupación de repetidos** con contador (ignora parámetros que cambian en cada hit); alertas (compra duplicada, errores de esquema, conversión sin value, Meta sin `event_id`).
+### Cambiado
+- Eventos: detalle rediseñado (parámetros clave, tabla de productos, validación por origen, JSON coloreado y plegable); el desplegable muestra importe, nº de items y transacción.
+### Corregido
+- La rueda del ratón sobre el panel ya no desplaza la página de detrás (`overscroll-behavior` + control de `wheel`).
+
 ## [0.6.0] - 2026-11-18
 ### Añadido
 - Pestaña **Eventos** (en vivo): desplegable con los eventos de `dataLayer`/`gtag` y los hits reales enviados a GA4, Universal Analytics y Meta Pixel, agrupados (Ecommerce, Interacción, Meta Pixel, Otros, GTM interno). Al elegir uno se ve su JSON; copiar, limpiar, seguir el último y ocultar `gtm.*`.

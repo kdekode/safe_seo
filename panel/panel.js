@@ -93,6 +93,30 @@ function setupOpacity() {
   });
 }
 
+/**
+ * La rueda sobre el panel nunca debe desplazar la página de detrás: solo se
+ * permite si algún contenedor bajo el cursor puede consumir ese desplazamiento.
+ */
+function trapWheel() {
+  const canScroll = (el, axis, delta) => {
+    const style = getComputedStyle(el);
+    const [size, client, pos, overflow] = axis === 'y' ? [el.scrollHeight, el.clientHeight, el.scrollTop, style.overflowY] : [el.scrollWidth, el.clientWidth, el.scrollLeft, style.overflowX];
+    if (!/(auto|scroll)/.test(overflow) || size <= client) return false;
+    return delta < 0 ? pos > 0 : pos + client < size - 1;
+  };
+  addEventListener(
+    'wheel',
+    (event) => {
+      if (event.ctrlKey) return; // zoom del navegador
+      for (let el = event.target; el instanceof Element; el = el.parentElement) {
+        if ((event.deltaY && canScroll(el, 'y', event.deltaY)) || (event.deltaX && canScroll(el, 'x', event.deltaX))) return;
+      }
+      event.preventDefault();
+    },
+    { passive: false },
+  );
+}
+
 /** Elimina el iframe del panel de la página. Autocontenida (se inyecta). */
 function removePanel(id) {
   document.getElementById(id)?.remove();
@@ -101,6 +125,7 @@ function removePanel(id) {
 async function init() {
   $('version').textContent = `v${chrome.runtime.getManifest().version}`;
   setupOpacity();
+  trapWheel();
   buildTabs();
 
   const tabId = Number(new URLSearchParams(location.search).get('tab'));

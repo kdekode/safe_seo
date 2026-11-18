@@ -5,7 +5,7 @@
  * Fuentes:
  *  - dataLayer / gtag(): lo que la página empuja (sondeo del array; no se
  *    parchea `push`, porque GTM lo reescribe).
- *  - Red: peticiones reales a GA4, Universal Analytics y Meta Pixel, vía
+ *  - Red: peticiones reales a GA4, Universal Analytics, Meta Pixel y Google Ads, vía
  *    PerformanceObserver. Los lotes enviados por POST no son visibles.
  *
  * El estado vive en la página bajo un Symbol no enumerable y se consulta
@@ -73,6 +73,13 @@ export function collectEvents(from = 0) {
       if (/\/g\/collect$/.test(path) && p.en) return ['GA4 (red)', p.en, p];
       if (/google-analytics\.com$/.test(host) && /\/collect$/.test(path) && p.t) return ['UA (red)', p.t === 'event' ? p.ea || 'event' : p.t, p];
       if (/(^|\.)facebook\.com$/.test(host) && path.startsWith('/tr') && p.ev) return ['Meta (red)', p.ev, p];
+      if (/(^|\.)(googleadservices\.com|doubleclick\.net|google\.com)$/.test(host)) {
+        const m = path.match(/\/pagead\/(conversion|1p-conversion|viewthroughconversion|1p-user-list)\/(?:AW-)?(\d+)/);
+        if (m) {
+          const name = m[1].endsWith('conversion') && m[1] !== 'viewthroughconversion' ? 'conversion' : m[1] === 'viewthroughconversion' ? 'remarketing' : 'lista de remarketing';
+          return ['Ads (red)', name, { conversion_id: `AW-${m[2]}`, ...p }];
+        }
+      }
       return null;
     };
     try {

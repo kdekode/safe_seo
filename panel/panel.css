@@ -35,6 +35,7 @@
 }
 
 * { box-sizing: border-box; }
+html, body, #panel, .source, .json, .table-wrap { overscroll-behavior: contain; }
 html { height: 100%; background: transparent; }
 body {
   height: 100%;
@@ -150,3 +151,14 @@ details summary { cursor: pointer; display: flex; gap: 6px; align-items: center;
 .event-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .json.tall { max-height: 340px; }
 .badges.left { justify-content: flex-start; max-width: none; }
+
+/* Eventos y Tags: visor JSON, detalles, tablas */
+.j-key { color: var(--info); }
+.j-str { color: var(--ok); }
+.j-num { color: var(--warn); }
+.j-lit { color: var(--error); }
+.event-name { font-size: 16px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; }
+details { border-top: 1px solid var(--border); padding-top: 6px; }
+details > summary { cursor: pointer; }
+details[open] > summary { margin-bottom: 6px; }
