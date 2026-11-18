@@ -2,6 +2,13 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.6.0] - 2026-11-18
+### Añadido
+- Pestaña **Eventos** (en vivo): desplegable con los eventos de `dataLayer`/`gtag` y los hits reales enviados a GA4, Universal Analytics y Meta Pixel, agrupados (Ecommerce, Interacción, Meta Pixel, Otros, GTM interno). Al elegir uno se ve su JSON; copiar, limpiar, seguir el último y ocultar `gtm.*`.
+- Validación del esquema GA4 de ecommerce (`items`, `currency`/`value`, `transaction_id` en `purchase`).
+- Detección de herramientas: GTM, GA4, Ads, Meta Pixel, TikTok, LinkedIn, Pinterest, X, Hotjar, Clarity, HubSpot.
+- Infraestructura de pestañas: `world: 'MAIN'`, `cache: false` y contexto `{ call, onLeave }` para vistas en vivo.
+
 ## [0.5.2] - 2026-11-18
 ### Corregido
 - Las pestañas Técnico y Código quedaban ocultas a la derecha en el panel estrecho; la barra de pestañas ahora se reparte en varias filas.

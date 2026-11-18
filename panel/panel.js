@@ -7,26 +7,35 @@ const tablist = $('tabs');
 const panel = $('panel');
 
 const state = { tab: null, cache: new Map(), selected: null, token: 0 };
+let cleanups = [];
 
-/** Ejecuta el colector de una pestaña en la página (una sola vez, con caché). */
+/** Ejecuta el colector de una pestaña en la página. `world: 'MAIN'` solo para leer variables de la página. */
+function run(def, args = []) {
+  return chrome.scripting
+    .executeScript({ target: { tabId: state.tab.id }, func: def.collect, args, world: def.world ?? 'ISOLATED' })
+    .then(([frame]) => {
+      if (frame?.result === undefined) throw new Error('La página no devolvió datos.');
+      return frame.result;
+    });
+}
+
+/** Una sola ejecución por pestaña, con caché (salvo `cache: false`, para vistas en vivo). */
 function collect(def) {
+  if (def.cache === false) return run(def);
   if (!state.cache.has(def.id)) {
-    const promise = chrome.scripting
-      .executeScript({ target: { tabId: state.tab.id }, func: def.collect })
-      .then(([frame]) => {
-        if (frame?.result === undefined) throw new Error('La página no devolvió datos.');
-        return frame.result;
-      })
-      .catch((error) => {
+    state.cache.set(
+      def.id,
+      run(def).catch((error) => {
         state.cache.delete(def.id);
         throw error;
-      });
-    state.cache.set(def.id, promise);
+      }),
+    );
   }
   return state.cache.get(def.id);
 }
 
 async function selectTab(id) {
+  cleanups.splice(0).forEach((fn) => fn());
   const def = TABS.find((t) => t.id === id) ?? TABS[0];
   state.selected = def.id;
   const token = ++state.token;
@@ -41,7 +50,7 @@ async function selectTab(id) {
 
   try {
     const data = await collect(def);
-    if (token === state.token) panel.replaceChildren(def.render(data));
+    if (token === state.token) panel.replaceChildren(def.render(data, { call: (...args) => run(def, args), onLeave: (fn) => cleanups.push(fn) }));
   } catch (error) {
     if (token === state.token) panel.replaceChildren(h('p', { class: 'error-box' }, `No se pudo analizar: ${error.message}`));
   }
@@ -104,6 +113,7 @@ async function init() {
     return;
   }
   state.tab = tab;
+  addEventListener('pagehide', () => cleanups.splice(0).forEach((fn) => fn()));
   $('host').textContent = new URL(tab.url).hostname;
   $('refresh').addEventListener('click', () => {
     state.cache.clear();
