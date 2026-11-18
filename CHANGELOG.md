@@ -2,6 +2,12 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.8.0] - 2026-11-18
+### Cambiado
+- Nueva paleta (#2F6FED, #ACC5F8, #ED2F6F, #F8ACC5, #6FED2F, #C5F8AC) en tema claro y oscuro: azul como acento, verde/rosa para OK/error, tintes claros como relleno.
+- Estilo más plano: esquinas casi rectas, etiquetas monoespaciadas, banda azul lateral, sin sombras difusas; botones con texto en lugar de glifos; iconos en azul.
+- Eventos: el JSON del evento se muestra siempre al final, desplegado.
+
 ## [0.7.0] - 2026-11-18
 ### Añadido
 - Pestaña **Tags**: IDs de GTM/GA4/Ads/UA (script, inline o activo), tabla de Consent Mode v2 (default vs. update), comandos `gtag` desplegables, scripts de terceros (GTM, gtag, Meta, TikTok, Hotjar, CMPs…) y snippets inline con copiar. Avisos: varios GTM, gtag+GTM a la vez, UA obsoleto, Consent Mode ausente o incompleto.

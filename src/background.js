@@ -28,7 +28,7 @@ function togglePanel(src, id) {
     'z-index': '2147483647',
     'color-scheme': 'normal',
     'backdrop-filter': 'blur(12px)',
-    'box-shadow': '-4px 0 24px rgba(0,0,0,.25)',
+    'box-shadow': '-1px 0 0 rgba(15,26,51,.35)',
   };
   for (const [prop, value] of Object.entries(styles)) frame.style.setProperty(prop, value, 'important');
   document.documentElement.append(frame);

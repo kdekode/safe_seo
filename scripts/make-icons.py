@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Genera los iconos PNG (lupa sobre fondo teal) sin dependencias externas."""
+"""Genera los iconos PNG (lupa sobre fondo azul #2F6FED) sin dependencias externas."""
 import struct, zlib, math, pathlib
 
-BG, FG = (15, 118, 110), (255, 255, 255)
+BG, FG = (47, 111, 237), (255, 255, 255)
 SS = 4  # supersampling
 
 def seg_dist(px, py, ax, ay, bx, by):

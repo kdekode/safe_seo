@@ -1,5 +1,5 @@
 import { collectEvents } from '../../src/collectors/events.js';
-import { card, checklist, copyButton, details, empty, h, jsonView, kv, pill, segmented } from '../ui.js';
+import { card, checklist, copyButton, empty, h, jsonView, kv, pill, segmented } from '../ui.js';
 
 const POLL_MS = 1500;
 
@@ -207,7 +207,7 @@ function detailView(entry) {
     ),
     checklist(validate(e)),
     itemsTable(itemsOf(e)) ? card(`Productos (${itemsOf(e).length})`, itemsTable(itemsOf(e))) : null,
-    details('JSON completo', false, jsonView(e.data), copyButton('Copiar JSON', () => json)),
+    card('Así se ve el evento (JSON)', jsonView(e.data), copyButton('Copiar JSON', () => json)),
   );
 }
 
