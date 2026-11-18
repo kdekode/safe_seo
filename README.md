@@ -3,7 +3,7 @@
 Extensión para Chromium (Manifest V3) con auditoría SEO on-page al instante.
 
 ## Principios
-- **Seguridad**: solo `activeTab` + `scripting` (y `contentSettings`, opcional, solo si bloqueas JS desde la pestaña Vista); sin `host_permissions`, sin servidores, sin telemetría, sin código remoto, CSP estricta.
+- **Seguridad**: solo `activeTab` + `scripting`; sin `host_permissions`, sin servidores, sin telemetría, sin código remoto, CSP estricta.
 - **Privacidad**: todo se analiza en local, en la propia pestaña.
 - **Eficiencia**: cada pestaña ejecuta su colector solo cuando se abre y el resultado se cachea.
 - **Sin XSS**: el contenido de la página nunca se inserta como HTML (solo nodos de texto).

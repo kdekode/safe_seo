@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Safe SEO",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Auditoría SEO on-page al instante: sin servidores, sin tracking y con permisos mínimos.",
   "minimum_chrome_version": "112",
   "background": { "service_worker": "src/background.js" },
@@ -16,7 +16,6 @@
     "128": "icons/icon-128.png"
   },
   "permissions": ["activeTab", "scripting"],
-  "optional_permissions": ["contentSettings"],
   "web_accessible_resources": [
     {
       "resources": ["panel/panel.html"],

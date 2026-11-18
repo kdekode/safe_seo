@@ -2,6 +2,10 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.9.1] - 2026-11-18
+### Eliminado
+- Bloqueo de JavaScript de la pestaña Vista y el permiso opcional `contentSettings`: con el JS bloqueado el panel no llegaba a mostrarse y el bloqueo persistía en el navegador. La pestaña Vista conserva solo la opción de desactivar CSS.
+
 ## [0.9.0] - 2026-11-18
 ### Añadido
 - Pestaña **Vista**: desactivar/reactivar el **CSS** de la página (hojas, `adoptedStyleSheets` y estilos en línea, también las añadidas después) y bloquear/reactivar el **JavaScript** del sitio con recarga.
