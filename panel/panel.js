@@ -50,7 +50,7 @@ async function selectTab(id) {
 
   try {
     const data = await collect(def);
-    if (token === state.token) panel.replaceChildren(def.render(data, { call: (...args) => run(def, args), onLeave: (fn) => cleanups.push(fn) }));
+    if (token === state.token) panel.replaceChildren(def.render(data, { tab: state.tab, call: (...args) => run(def, args), onLeave: (fn) => cleanups.push(fn) }));
   } catch (error) {
     if (token === state.token) panel.replaceChildren(h('p', { class: 'error-box' }, `No se pudo analizar: ${error.message}`));
   }

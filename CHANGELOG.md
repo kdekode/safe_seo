@@ -2,6 +2,13 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.9.0] - 2026-11-18
+### Añadido
+- Pestaña **Vista**: desactivar/reactivar el **CSS** de la página (hojas, `adoptedStyleSheets` y estilos en línea, también las añadidas después) y bloquear/reactivar el **JavaScript** del sitio con recarga.
+- Permiso opcional `contentSettings`: solo se solicita al usar el bloqueo de JS.
+### Cambiado
+- El panel ocupa el 30 % del ancho (antes 25 %).
+
 ## [0.8.0] - 2026-11-18
 ### Cambiado
 - Nueva paleta (#2F6FED, #ACC5F8, #ED2F6F, #F8ACC5, #6FED2F, #C5F8AC) en tema claro y oscuro: azul como acento, verde/rosa para OK/error, tintes claros como relleno.

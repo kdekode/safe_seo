@@ -21,7 +21,7 @@ function togglePanel(src, id) {
     position: 'fixed',
     top: '0',
     right: '0',
-    width: '25vw',
+    width: '30vw',
     'min-width': 'min(400px, 100vw)',
     height: '100vh',
     border: '0',
