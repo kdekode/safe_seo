@@ -15,10 +15,12 @@
       </div>
       <div class="actions">
         <input id="alpha" class="alpha" type="range" min="50" max="100" step="5" value="88" title="Transparencia del panel" aria-label="Opacidad del panel" />
+        <button id="theme" type="button" class="btn" title="Cambiar tema (automático, claro, oscuro)">Auto</button>
         <button id="refresh" type="button" class="btn" title="Volver a analizar la página">Actualizar</button>
         <button id="close" type="button" class="btn" title="Cerrar panel" aria-label="Cerrar panel">Cerrar</button>
       </div>
     </header>
+    <div id="verdict" class="verdict"></div>
     <nav id="tabs" role="tablist" aria-label="Secciones"></nav>
     <main id="panel" role="tabpanel" tabindex="-1"></main>
     <footer class="foot muted"><span id="version"></span> · Todo se analiza en local</footer>

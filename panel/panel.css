@@ -26,7 +26,7 @@
   --warn-solid: color-mix(in srgb, #ed2f6f 50%, #f8acc5);
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --accent-ink: #acc5f8;
     --bg: #0d1322;
     --surface: #151c33;
@@ -38,6 +38,18 @@
     --error: #f26b98;
     --info: #acc5f8;
   }
+}
+:root[data-theme='dark'] {
+  --accent-ink: #acc5f8;
+  --bg: #0d1322;
+  --surface: #151c33;
+  --border: #2b365a;
+  --text: #edf1fa;
+  --muted: #a9b5d3;
+  --ok: #6fed2f;
+  --warn: #f8acc5;
+  --error: #f26b98;
+  --info: #acc5f8;
 }
 
 * { box-sizing: border-box; }
@@ -170,3 +182,7 @@ details > summary { cursor: pointer; }
 details[open] > summary { margin-bottom: 6px; }
 
 .select { padding: 4px 6px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg); color: var(--text); font: inherit; }
+
+/* Veredicto de indexación */
+.verdict { display: flex; align-items: center; gap: 8px; padding: 2px 12px 8px; min-height: 28px; }
+.verdict .reason { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 12px; }

@@ -34,6 +34,15 @@ function togglePanel(src, id) {
   document.documentElement.append(frame);
 }
 
+const DEFAULT_TITLE = 'Safe SEO: abrir/cerrar panel';
+
+// Al navegar, el veredicto de indexación deja de valer: se restaura el icono.
+chrome.tabs.onUpdated.addListener((tabId, info) => {
+  if (info.status !== 'loading') return;
+  chrome.action.setIcon({ tabId, path: { 16: 'icons/icon-16.png', 32: 'icons/icon-32.png' } }).catch(() => {});
+  chrome.action.setTitle({ tabId, title: DEFAULT_TITLE }).catch(() => {});
+});
+
 chrome.action.onClicked.addListener(async (tab) => {
   try {
     await chrome.scripting.executeScript({

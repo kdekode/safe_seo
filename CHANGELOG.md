@@ -2,6 +2,14 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [0.10.0] - 2026-11-18
+### Añadido
+- **Punto de color en el icono** según la indexabilidad de la pestaña: verde = indexable, naranja = indexable con avisos (canonical a otra URL, nofollow, bloqueada por robots.txt, redirección), rosa = no indexable (noindex en meta o `X-Robots-Tag`, error HTTP). Se calcula al abrir el panel y se restablece al navegar. El tooltip del icono indica el estado.
+- Veredicto de indexación y motivos en la cabecera del panel.
+- **Tema claro/oscuro/automático** con botón en la cabecera (se recuerda).
+### Eliminado
+- Pestaña Vista (desactivar CSS).
+
 ## [0.9.1] - 2026-11-18
 ### Eliminado
 - Bloqueo de JavaScript de la pestaña Vista y el permiso opcional `contentSettings`: con el JS bloqueado el panel no llegaba a mostrarse y el bloqueo persistía en el navegador. La pestaña Vista conserva solo la opción de desactivar CSS.
