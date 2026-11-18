@@ -1,8 +1,7 @@
 <h1 align="center">Safe SEO</h1>
 
 <p align="center">
-  Auditoría SEO y de analítica en un panel lateral, para cualquier navegador basado en Chromium.<br />
-  Todo se analiza en tu equipo. Sin servidores, sin telemetría, con permisos mínimos.
+  Una extensión para Chromium que abre un panel lateral con los datos SEO y de analítica de la página que tienes delante.
 </p>
 
 <p align="center">
@@ -14,75 +13,79 @@
 
 ---
 
-Pulsas el icono y se abre un panel sobre la página (30 % del ancho, translúcido y con tema claro u oscuro). En el propio icono aparece un punto de color que te dice si la página se puede indexar.
+Pulsas el icono y aparece un panel que ocupa el 30 % del ancho de la página, algo translúcido, con tema claro u oscuro. Todo lo que muestra se calcula en tu navegador: no hay servidor detrás ni se envía nada a ningún sitio.
 
-## Punto de indexación
+En el icono verás además un punto de color que avisa de si la página se puede indexar o no.
 
-| Color | Significado | Ejemplos |
+## El punto del icono
+
+| Color | Qué quiere decir | Cuándo sale |
 | :---: | --- | --- |
-| Verde | Indexable | Sin bloqueos detectados |
-| Naranja | Indexable, pero con avisos | Canonical a otra URL, `nofollow`, bloqueada por `robots.txt`, redirección |
-| Rosa | No indexable | `noindex` en meta o en `X-Robots-Tag`, error HTTP 4xx/5xx |
+| Verde | Se puede indexar | No se ha detectado ningún bloqueo |
+| Naranja | Se puede indexar, pero ojo | Canonical a otra URL, `nofollow`, bloqueada en `robots.txt` o una redirección |
+| Rosa | No se puede indexar | `noindex` en la meta o en `X-Robots-Tag`, o un error HTTP 4xx/5xx |
 
-El punto aparece al pulsar el icono y se afina unos segundos después con `robots.txt` y las cabeceras HTTP.
+Sale nada más pulsar el icono. Unos segundos después se corrige, cuando ya se han leído `robots.txt` y las cabeceras HTTP.
 
-## Pestañas
+## Qué hay en cada pestaña
 
-| Pestaña | Qué te enseña |
+| Pestaña | Contenido |
 | --- | --- |
-| **General** | Vista previa en Google, title, description, H1, canonical, robots, HTTPS, idioma, viewport, URL y contenido |
-| **Encabezados** | Jerarquía H1–H6 con saltos de nivel, vacíos y ocultos. Copia el esquema |
-| **Enlaces** | Internos y externos, `nofollow`/`sponsored`/`ugc`, anchors vacíos o genéricos. Filtros, búsqueda y CSV |
-| **Imágenes** | `alt` ausente o vacío, sin dimensiones (CLS), sobredimensionadas, lazy-loading. CSV |
-| **Social** | Open Graph y Twitter Card, con vista previa |
-| **Schema** | JSON-LD (incluido `@graph`), Microdata y RDFa, con errores de sintaxis |
-| **Técnico** | Estado HTTP, cabeceras, `robots.txt` para Googlebot, sitemaps, hreflang, contenido mixto y Web Vitals |
-| **Código** | HTML inicial frente a DOM renderizado: qué contenido depende de JavaScript |
-| **Eventos** | En vivo: `dataLayer`, `gtag` y los hits reales a GA4, Universal Analytics, Meta Pixel y Google Ads |
-| **Tags** | GTM, GA4, Ads, Consent Mode v2, comandos `gtag`, scripts de terceros y snippets inline |
+| General | Vista previa en Google, title, description, H1, canonical, robots, HTTPS, idioma, viewport, URL y contenido |
+| Encabezados | Jerarquía H1 a H6, marcando saltos de nivel, encabezados vacíos y ocultos. Puedes copiar el esquema |
+| Enlaces | Internos y externos, con `nofollow`, `sponsored` y `ugc`, y anchors vacíos o genéricos. Filtros, búsqueda y exportación a CSV |
+| Imágenes | `alt` ausente o vacío, falta de dimensiones (CLS), imágenes demasiado grandes y lazy-loading. También en CSV |
+| Social | Open Graph y Twitter Card con su vista previa |
+| Schema | JSON-LD (incluido `@graph`), Microdata y RDFa, con los errores de sintaxis |
+| Técnico | Estado HTTP, cabeceras, `robots.txt` para Googlebot, sitemaps, hreflang, contenido mixto y Web Vitals |
+| Código | HTML inicial frente al DOM renderizado, para ver qué contenido depende de JavaScript |
+| Eventos | En directo: `dataLayer`, `gtag` y los hits reales a GA4, Universal Analytics, Meta Pixel y Google Ads |
+| Tags | GTM, GA4, Ads, Consent Mode v2, comandos `gtag`, scripts de terceros y snippets inline |
 
-### Pensada para quien mide
+### Para quien trabaja con analítica
 
-- **Eventos agrupados:** los repetidos se colapsan con un contador, ignorando parámetros que cambian en cada hit.
-- **Filtro «Clave»:** `purchase`, `add_to_cart`, `begin_checkout`, `generate_lead` y las conversiones de Ads.
-- **Validación de ecommerce GA4:** `items`, `currency` junto a `value` y `transaction_id` en `purchase`.
-- **Alertas:** compra duplicada, conversión de Ads sin `value`, Meta sin `event_id`.
-- **JSON de cada evento** al final del detalle, con colores y botón de copiar.
+Las pestañas Eventos y Tags son las que más peso tienen en el día a día de un proyecto de medición, y por eso tienen algunos detalles extra:
+
+- Los eventos repetidos se agrupan con un contador, sin tener en cuenta los parámetros que cambian en cada hit.
+- El filtro «Clave» deja solo `purchase`, `add_to_cart`, `begin_checkout`, `generate_lead` y las conversiones de Ads.
+- En ecommerce de GA4 se comprueba que haya `items` y `currency` junto a `value`, y `transaction_id` en `purchase`.
+- Salta un aviso si hay una compra duplicada, una conversión de Ads sin `value` o un evento de Meta sin `event_id`.
+- Al final del detalle de cada evento tienes su JSON con colores y un botón para copiarlo.
 
 ## Instalación
 
-La extensión aún no está en ninguna tienda. Para usarla en local:
+No está publicada en ninguna tienda, así que de momento se instala a mano:
 
 1. Clona el repositorio:
    ```bash
    git clone git@github.com:kdekode/safe_seo.git
    ```
-2. Abre `chrome://extensions` (o `brave://extensions`) y activa el **modo desarrollador**.
-3. Pulsa **Cargar descomprimida** y elige la carpeta del proyecto.
+2. Abre `chrome://extensions` (o `brave://extensions`) y activa el modo desarrollador.
+3. Pulsa «Cargar descomprimida» y elige la carpeta del proyecto.
 
-Requiere Chrome o un navegador basado en Chromium 112 o superior.
+Necesitas Chrome, o un navegador basado en Chromium, en la versión 112 o posterior.
 
-> **Brave:** Shields bloquea por defecto Google Analytics, GTM y Meta Pixel. Si las pestañas **Eventos** y **Tags** salen vacías, baja los Shields en el sitio que estés auditando.
+> Si usas Brave, los Shields bloquean por defecto Google Analytics, GTM y Meta Pixel. Si Eventos y Tags te salen vacías, desactiva los Shields en el sitio que estés auditando.
 
 ## Privacidad y permisos
 
-Nada sale de tu navegador. La extensión no tiene servidor, no registra tu actividad y no carga código remoto.
+La extensión no tiene servidor, no guarda tu actividad y no descarga código de fuera. Pide solo dos permisos:
 
-| Permiso | Para qué |
+| Permiso | Para qué lo usa |
 | --- | --- |
-| `activeTab` | Acceso temporal a la pestaña actual, solo cuando pulsas el icono |
-| `scripting` | Inyectar el panel y leer metadatos, enlaces y datos de analítica de la página auditada |
+| `activeTab` | Acceder a la pestaña actual, y solo cuando pulsas el icono |
+| `scripting` | Inyectar el panel y leer de la página los metadatos, los enlaces y los datos de analítica |
 
-No hay `host_permissions`: no puede leer ninguna página hasta que la abres tú. Las peticiones de la pestaña **Técnico** son al mismo origen y sin cookies. Los enlaces a servicios externos (Rich Results Test, PageSpeed Insights, Wayback Machine) solo se abren si los pulsas.
+No declara `host_permissions`, así que no puede leer ninguna página que no hayas abierto tú con el icono. Las peticiones de la pestaña Técnico van al mismo origen y sin cookies. Los enlaces a Rich Results Test, PageSpeed Insights y Wayback Machine solo se abren si pulsas en ellos.
 
-La CSP es estricta y el contenido de las páginas nunca se inserta como HTML en el panel, solo como texto. Las exportaciones a CSV neutralizan las celdas que empiezan por `=`, `+`, `-` o `@` para evitar inyección de fórmulas.
+La CSP es estricta. El contenido de las páginas se pinta siempre como texto y nunca como HTML. En las exportaciones a CSV, las celdas que empiezan por `=`, `+`, `-` o `@` se neutralizan para que no se interpreten como fórmulas.
 
-## Limitaciones
+## Lo que no hace
 
 - El punto del icono se calcula al abrir el panel. Sin permiso sobre todos los sitios, la extensión no puede analizar páginas por su cuenta.
-- La pestaña **Código** muestra el HTML que descarga tu navegador, no la copia que guarda Google. Google retiró `cache:` en 2024 y no hay forma de reproducir su renderizador.
-- Los lotes de eventos de GA4 enviados por `POST` no son visibles en red. Sí se ven en `dataLayer`.
-- Las métricas de rendimiento son las observadas hasta ese momento, no datos de campo (CrUX).
+- La pestaña Código enseña el HTML que descarga tu navegador, no la copia que tiene Google. Google quitó `cache:` en 2024 y su renderizador no se puede reproducir.
+- Los lotes de eventos de GA4 que se mandan por `POST` no se ven en la red, aunque sí aparecen en `dataLayer`.
+- Las métricas de rendimiento son las que se han observado hasta ese momento. No son datos de campo (CrUX).
 
 ## Desarrollo
 
@@ -102,16 +105,16 @@ icons/                 generados con scripts/make-icons.py
 scripts/               iconos y empaquetado
 ```
 
-**Añadir una pestaña**
+Para añadir una pestaña:
 
-1. Crea `src/collectors/<nombre>.js` con una función **autocontenida**: se serializa e inyecta, así que no puede usar imports ni variables externas.
-2. Crea `panel/tabs/<nombre>.js` exportando `{ id, label, collect, render }`. Usa `world: 'MAIN'` solo si necesitas leer variables de la página y `cache: false` para vistas en vivo.
+1. Crea `src/collectors/<nombre>.js` con una función autocontenida. Se serializa y se inyecta en la página, así que no puede usar imports ni variables de fuera.
+2. Crea `panel/tabs/<nombre>.js` y exporta `{ id, label, collect, render }`. Pon `world: 'MAIN'` solo si necesitas leer variables de la página, y `cache: false` si la vista es en directo.
 3. Regístrala en `panel/tabs/index.js`.
 
-**Empaquetar:** `./scripts/package.sh` genera `dist/safe-seo-<versión>.zip` con `git archive`.
+Para empaquetar, `./scripts/package.sh` genera `dist/safe-seo-<versión>.zip` con `git archive`.
 
-**Versionado:** [SemVer](https://semver.org/lang/es/). Un commit por versión con su etiqueta `vX.Y.Z` y una entrada en [`CHANGELOG.md`](CHANGELOG.md). La versión vive en `manifest.json`.
+Sigo [SemVer](https://semver.org/lang/es/): un commit por versión, con su etiqueta `vX.Y.Z` y una entrada en [`CHANGELOG.md`](CHANGELOG.md). La versión se define en `manifest.json`.
 
 ## Licencia
 
-[MIT](LICENSE). Puedes usarla, modificarla y distribuirla, incluso con fines comerciales, siempre que conserves el aviso de copyright y la licencia.
+[MIT](LICENSE). Úsala, modifícala y compártela como quieras, también para trabajo comercial, mientras conserves el aviso de copyright y la licencia.
